@@ -1,0 +1,5 @@
+{
+  "name": "Campus Food Waste Optimizer",
+  "description": "An RL-based environment for optimizing campus dining hall food waste and supply management.",
+  "requestFramePermissions": []
+}

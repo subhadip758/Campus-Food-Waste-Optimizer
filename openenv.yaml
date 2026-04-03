@@ -1,0 +1,53 @@
+name: Campus Food Waste RL Optimizer
+version: 2.0.0
+description: Advanced RL environment mapping dietary logistics (Vegan, Gluten-Free, Standard) and Supply Chain Horizons to isolate Frontier Models.
+author: AIS Build
+license: Apache-2.0
+
+environment:
+  observation_space:
+    day: integer
+    current_meal: string (Breakfast, Lunch, Dinner)
+    weather: string (Sunny, Rainy, Extreme)
+    events: array of strings
+    halls: 
+      dict mapping hall_id to:
+        inventory: dict of dietary_restriction -> (dict of item_id -> quantity)
+        expected_turnout: dict of dietary_restriction -> integer
+  action_space:
+    preps: dict of hall_id -> (dict of dietary_restriction -> quantity)
+    transfers: array of objects { from_hall, to_hall, quantity, dietary_restriction }
+    orders: array of objects { hall_id, dietary_restriction, quantity, is_emergency }
+  reward_function:
+    students_fed: +1.0 per student
+    waste_penalty: -2.0 per unit spoiled/wasted
+    shortage_penalty: -5.0 per unit
+    transfer_cost: -0.1 per unit
+    standard_order_cost: -2.0 per unit (arrives in 3 days)
+    emergency_order_cost: -10.0 per unit (arrives tomorrow)
+    formula: students_fed + waste_penalty + shortage_penalty + standard_order_cost + emergency_order_cost + transfer_cost
+
+tasks:
+  - id: easy_inventory_management
+    name: Predictable Prep Optimization
+    description: 1 dining hall, 3 days. Predictable turnout pattern across diet groups.
+    difficulty: Easy
+    grader: /api/grader
+  - id: medium_multi_hall_transfer
+    name: Spoilage Mitigation via Transfer
+    description: 2 dining halls. Mitigating spoilage by transferring ingredients before expiry.
+    difficulty: Medium
+    grader: /api/grader
+  - id: hard_dynamic_optimization
+    name: Horizon-driven Multi-hall Dynamics
+    description: 3 dining halls, 7 days. Sudden event shifts requiring predictive logistics vs expensive emergency orders across split diet restrictions.
+    difficulty: Hard
+    grader: /api/grader
+
+endpoints:
+  reset: /api/reset
+  step: /api/step
+  state: /api/state
+  tasks: /api/tasks
+  grader: /api/grader
+  baseline: /api/baseline
