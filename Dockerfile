@@ -11,7 +11,7 @@ COPY . .
 RUN npm run build || true
 
 # Generate a dist folder if it doesn't exist to prevent express from crashing on static serving
-RUN mkdir -p dist/assets && echo "<!DOCTYPE html><html><body>Campus Food Waste RL Optimizer API is running.</body></html>" > dist/index.html
+RUN mkdir -p dist/assets && [ -f dist/index.html ] || echo "<!DOCTYPE html><html><body>Campus Food Waste RL Optimizer API is running.</body></html>" > dist/index.html
 
 EXPOSE 7860
 
